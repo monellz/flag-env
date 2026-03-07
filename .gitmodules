@@ -5,3 +5,4 @@
 [submodule "FlagTree"]
 	path = FlagTree
 	url = git@github.com:monellz/FlagTree.git
+	branch = add_fused_moe
