@@ -1,0 +1,7 @@
+[submodule "FlagGems"]
+	path = FlagGems
+	url = git@github.com:monellz/FlagGems.git
+	branch = add_fused_moe
+[submodule "FlagTree"]
+	path = FlagTree
+	url = git@github.com:monellz/FlagTree.git
