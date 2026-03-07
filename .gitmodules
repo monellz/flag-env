@@ -6,3 +6,6 @@
 	path = FlagTree
 	url = git@github.com:monellz/FlagTree.git
 	branch = add_fused_moe
+[submodule "hpc-ops"]
+	path = hpc-ops
+	url = git@github.com:Tencent/hpc-ops.git
