@@ -9,3 +9,6 @@
 [submodule "hpc-ops"]
 	path = hpc-ops
 	url = git@github.com:Tencent/hpc-ops.git
+[submodule "sonic-moe"]
+	path = sonic-moe
+	url = git@github.com:monellz/sonic-moe.git
