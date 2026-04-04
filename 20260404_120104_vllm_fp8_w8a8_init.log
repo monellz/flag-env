@@ -1,0 +1,65 @@
++ echo 20260404_120104
+20260404_120104
+++ git -C /home/zhongrx/dev/flag-env/FlagGems rev-parse HEAD
++ echo 'FlagGems commit: b17b686ef2218adce55f16391847d45582905011'
+FlagGems commit: b17b686ef2218adce55f16391847d45582905011
+++ git -C /home/zhongrx/dev/flag-env/FlagGems log -1 --oneline
++ echo 'FlagGems: b17b686e add qwen shape for fp8 blockwise w8a8'
+FlagGems: b17b686e add qwen shape for fp8 blockwise w8a8
++ cd /home/zhongrx/dev/flag-env/FlagGems/benchmark
++ srun --gres=gpu:1 pytest -x -vv -s test_vllm_perf.py::test_perf_fused_moe_fp8_blockwise_gems_vs_vllm
+============================= test session starts ==============================
+platform linux -- Python 3.12.13, pytest-9.0.2, pluggy-1.6.0 -- /home/zhongrx/dev/flag-env/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/zhongrx/dev/flag-env/FlagGems
+configfile: pytest.ini
+plugins: anyio-4.13.0
+collecting ... collected 1 item
+
+test_vllm_perf.py::test_perf_fused_moe_fp8_blockwise_gems_vs_vllm WARNING 04-04 12:01:13 [fused_moe.py:1093] Using default MoE config. Performance might be sub-optimal! Config file not found at /home/zhongrx/dev/flag-env/.venv/lib/python3.12/site-packages/vllm/model_executor/layers/fused_moe/configs/E=8,N=14336,device_name=NVIDIA_H20,dtype=fp8_w8a8,block_shape=[128,128].json
+WARNING 04-04 12:01:29 [fused_moe.py:1093] Using default MoE config. Performance might be sub-optimal! Config file not found at /home/zhongrx/dev/flag-env/.venv/lib/python3.12/site-packages/vllm/model_executor/layers/fused_moe/configs/E=256,N=2048,device_name=NVIDIA_H20,dtype=fp8_w8a8,block_shape=[128,128].json
+WARNING 04-04 12:01:43 [fused_moe.py:1093] Using default MoE config. Performance might be sub-optimal! Config file not found at /home/zhongrx/dev/flag-env/.venv/lib/python3.12/site-packages/vllm/model_executor/layers/fused_moe/configs/E=512,N=1024,device_name=NVIDIA_H20,dtype=fp8_w8a8,block_shape=[128,128].json
+
+Operator: fused_moe_fp8_blockwise_gems_vs_vllm  Performance Test (dtype=torch.bfloat16, mode=kernel,level=comprehensive)
+Status       Torch Latency (ms)    Gems Latency (ms)         Gems Speedup          Size Detail
+-----------------------------------------------------------------------------------------------
+SUCCESS               0.204544            0.415136               0.493          [torch.Size([1, 4096]), torch.Size([8, 28672, 4096]), torch.Size([8, 4096, 14336]), torch.Size([8, 224, 32]), torch.Size([8, 32, 112]), torch.Size([1, 2]), torch.Size([1, 2])]
+SUCCESS               0.534496            0.537888               0.994          [torch.Size([4, 4096]), torch.Size([8, 28672, 4096]), torch.Size([8, 4096, 14336]), torch.Size([8, 224, 32]), torch.Size([8, 32, 112]), torch.Size([4, 2]), torch.Size([4, 2])]
+SUCCESS               0.586816            0.592224               0.991          [torch.Size([16, 4096]), torch.Size([8, 28672, 4096]), torch.Size([8, 4096, 14336]), torch.Size([8, 224, 32]), torch.Size([8, 32, 112]), torch.Size([16, 2]), torch.Size([16, 2])]
+SUCCESS               0.955552            0.959872               0.995          [torch.Size([64, 4096]), torch.Size([8, 28672, 4096]), torch.Size([8, 4096, 14336]), torch.Size([8, 224, 32]), torch.Size([8, 32, 112]), torch.Size([64, 2]), torch.Size([64, 2])]
+SUCCESS               0.789248            0.806720               0.978          [torch.Size([128, 4096]), torch.Size([8, 28672, 4096]), torch.Size([8, 4096, 14336]), torch.Size([8, 224, 32]), torch.Size([8, 32, 112]), torch.Size([128, 2]), torch.Size([128, 2])]
+SUCCESS               1.211728            1.245584               0.973          [torch.Size([256, 4096]), torch.Size([8, 28672, 4096]), torch.Size([8, 4096, 14336]), torch.Size([8, 224, 32]), torch.Size([8, 32, 112]), torch.Size([256, 2]), torch.Size([256, 2])]
+SUCCESS               1.728976            1.797600               0.962          [torch.Size([512, 4096]), torch.Size([8, 28672, 4096]), torch.Size([8, 4096, 14336]), torch.Size([8, 224, 32]), torch.Size([8, 32, 112]), torch.Size([512, 2]), torch.Size([512, 2])]
+SUCCESS               0.194816            0.393120               0.496          [torch.Size([1, 7168]), torch.Size([256, 4096, 7168]), torch.Size([256, 7168, 2048]), torch.Size([256, 32, 56]), torch.Size([256, 56, 16]), torch.Size([1, 8]), torch.Size([1, 8])]
+SUCCESS               0.587584            0.580416               1.012          [torch.Size([4, 7168]), torch.Size([256, 4096, 7168]), torch.Size([256, 7168, 2048]), torch.Size([256, 32, 56]), torch.Size([256, 56, 16]), torch.Size([4, 8]), torch.Size([4, 8])]
+SUCCESS               1.763056            1.819520               0.969          [torch.Size([16, 7168]), torch.Size([256, 4096, 7168]), torch.Size([256, 7168, 2048]), torch.Size([256, 32, 56]), torch.Size([256, 56, 16]), torch.Size([16, 8]), torch.Size([16, 8])]
+SUCCESS               3.789984            3.733904               1.015          [torch.Size([64, 7168]), torch.Size([256, 4096, 7168]), torch.Size([256, 7168, 2048]), torch.Size([256, 32, 56]), torch.Size([256, 56, 16]), torch.Size([64, 8]), torch.Size([64, 8])]
+SUCCESS               5.437440            5.449536               0.998          [torch.Size([128, 7168]), torch.Size([256, 4096, 7168]), torch.Size([256, 7168, 2048]), torch.Size([256, 32, 56]), torch.Size([256, 56, 16]), torch.Size([128, 8]), torch.Size([128, 8])]
+SUCCESS               5.550112            5.567968               0.997          [torch.Size([256, 7168]), torch.Size([256, 4096, 7168]), torch.Size([256, 7168, 2048]), torch.Size([256, 32, 56]), torch.Size([256, 56, 16]), torch.Size([256, 8]), torch.Size([256, 8])]
+SUCCESS               0.179888            0.407808               0.441          [torch.Size([1, 4096]), torch.Size([512, 2048, 4096]), torch.Size([512, 4096, 1024]), torch.Size([512, 16, 32]), torch.Size([512, 32, 8]), torch.Size([1, 10]), torch.Size([1, 10])]
+SUCCESS               0.243744            0.404992               0.602          [torch.Size([4, 4096]), torch.Size([512, 2048, 4096]), torch.Size([512, 4096, 1024]), torch.Size([512, 16, 32]), torch.Size([512, 32, 8]), torch.Size([4, 10]), torch.Size([4, 10])]
+SUCCESS               0.754112            0.729360               1.034          [torch.Size([16, 4096]), torch.Size([512, 2048, 4096]), torch.Size([512, 4096, 1024]), torch.Size([512, 16, 32]), torch.Size([512, 32, 8]), torch.Size([16, 10]), torch.Size([16, 10])]
+SUCCESS               1.899456            1.897408               1.001          [torch.Size([64, 4096]), torch.Size([512, 2048, 4096]), torch.Size([512, 4096, 1024]), torch.Size([512, 16, 32]), torch.Size([512, 32, 8]), torch.Size([64, 10]), torch.Size([64, 10])]
+SUCCESS               3.116272            3.128896               0.996          [torch.Size([128, 4096]), torch.Size([512, 2048, 4096]), torch.Size([512, 4096, 1024]), torch.Size([512, 16, 32]), torch.Size([512, 32, 8]), torch.Size([128, 10]), torch.Size([128, 10])]
+SUCCESS               3.339792            3.357104               0.995          [torch.Size([256, 4096]), torch.Size([512, 2048, 4096]), torch.Size([512, 4096, 1024]), torch.Size([512, 16, 32]), torch.Size([512, 32, 8]), torch.Size([256, 10]), torch.Size([256, 10])]
+
+PASSED
+
+=============================== warnings summary ===============================
+../../.venv/lib/python3.12/site-packages/triton/runtime/autotuner.py:99: 31 warnings
+  /home/zhongrx/dev/flag-env/.venv/lib/python3.12/site-packages/triton/runtime/autotuner.py:99: DeprecationWarning: warmup, rep, and use_cuda_graph parameters are deprecated. See https://github.com/triton-lang/triton/pull/4496 for details.
+    warnings.warn(("warmup, rep, and use_cuda_graph parameters are deprecated. See "
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyPacked has no __module__ attribute
+
+<frozen importlib._bootstrap>:488
+  <frozen importlib._bootstrap>:488: DeprecationWarning: builtin type SwigPyObject has no __module__ attribute
+
+../../.venv/lib/python3.12/site-packages/torch/jit/_script.py:362: 14 warnings
+  /home/zhongrx/dev/flag-env/.venv/lib/python3.12/site-packages/torch/jit/_script.py:362: DeprecationWarning: `torch.jit.script_method` is deprecated. Please switch to `torch.compile` or `torch.export`.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================= 1 passed, 47 warnings in 48.16s ========================
+sys:1: DeprecationWarning: builtin type swigvarlink has no __module__ attribute
