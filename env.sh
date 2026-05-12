@@ -4,6 +4,7 @@
 # spack load cuda@12.9.1
 # uv pip install torch --index-url https://download.pytorch.org/whl/cu129
 # uv pip install pytest vllm==0.17.0 # 20260307 更新
+# uv pip install pytest vllm==0.20.2 # for fp8 bmm
 
 spack load cuda@12.9.1
 source .venv/bin/activate

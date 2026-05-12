@@ -1,7 +1,7 @@
 [submodule "FlagGems"]
 	path = FlagGems
 	url = git@github.com:monellz/FlagGems.git
-	branch = add_fused_moe
+	branch = add_fp8_bmm
 [submodule "FlagTree"]
 	path = FlagTree
 	url = git@github.com:monellz/FlagTree.git
@@ -12,3 +12,6 @@
 [submodule "sonic-moe"]
 	path = sonic-moe
 	url = git@github.com:monellz/sonic-moe.git
+[submodule "DeepGEMM"]
+	path = DeepGEMM
+	url = git@github.com:deepseek-ai/DeepGEMM.git
