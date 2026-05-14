@@ -6,6 +6,7 @@ Targets:
   - DeepGEMM ``fp8_einsum("bhr,hdr->bhd", ...)``        (FP8 W8A8, per-token A x per-block B)
   - FlagGems ``w8a8_block_fp8_matmul`` invoked once per head (FP8 W8A8)
   - DeepGEMM ``einsum(..., use_cublaslt=True)``         (BF16 cuBLASLt baseline)
+  - My      ``w8a8_block_fp8_bmm`` (Gluon-based block FP8 BMM, treats h as batch)
 
 Examples:
   python profile_fp8_bhr_hdr_bhd.py --shape-preset default --backends all
@@ -85,6 +86,14 @@ class EinsumCase:
     fg_b:   List["torch.Tensor"] = field(default_factory=list)  # h x (d, r)        FP8
     fg_bs:  List["torch.Tensor"] = field(default_factory=list)  # h x (d/128, r/128) FP32
 
+    # My backend tensors (populated lazily by prepare_my_inputs when 'my' is requested).
+    # w8a8_block_fp8_bmm takes (B=h, M=b, N=d, K=r) BMM layout, K-major (last-dim contig).
+    my_x:   "torch.Tensor" = None  # (h, b, r)         FP8, K-major view of x_fp8[0]
+    my_y:   "torch.Tensor" = None  # (h, d, r)         FP8, K-major (= y_fp8[0])
+    my_xs:  "torch.Tensor" = None  # (h, b, r/128)     FP32 view of x_fp8[1]
+    my_ys:  "torch.Tensor" = None  # (h, d/128, r/128) FP32 (= y_fp8[1])
+    z_my:   "torch.Tensor" = None  # (b, h, d)         BF16, kernel writes via a permuted view
+
 
 def load_runtime_deps() -> None:
     global torch
@@ -147,7 +156,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--backends",
         default="all",
-        help="comma-separated: deepgemm,flaggems,cublaslt or all",
+        help="comma-separated: deepgemm,flaggems,cublaslt,my or all",
     )
     parser.add_argument(
         "--shape-preset",
@@ -234,9 +243,9 @@ def nvtx_range(name: str):
 
 def parse_backends(raw: str) -> List[str]:
     if raw == "all":
-        return ["deepgemm", "flaggems", "cublaslt"]
+        return ["deepgemm", "flaggems", "cublaslt", "my"]
     backends = [item.strip().lower() for item in raw.split(",") if item.strip()]
-    valid = {"deepgemm", "flaggems", "cublaslt"}
+    valid = {"deepgemm", "flaggems", "cublaslt", "my"}
     invalid = sorted(set(backends) - valid)
     if invalid:
         raise ValueError(f"Unsupported backends: {', '.join(invalid)}")
@@ -334,6 +343,54 @@ def load_cublaslt_backend() -> Callable[[EinsumCase], "torch.Tensor"]:
     return _run
 
 
+def prepare_my_inputs(case: EinsumCase) -> None:
+    """Materialize my-backend tensor views (h-as-batch BMM layout, K-major / last-dim contig).
+
+    All inputs are view-only over the existing case.x_fp8 / case.y_fp8 buffers — no extra
+    HBM is consumed. Idempotent.
+    """
+    if case.my_x is not None:
+        return
+    x_data, x_scale = case.x_fp8       # (b, h, r) FP8, (b, h, r/128) FP32
+    y_data, y_scale = case.y_fp8       # (h, d, r) FP8, (h, d/128, r/128) FP32
+    device = x_data.device
+
+    # x: (b, h, r) -> (h, b, r); permute is a pure view, last-dim (r) stride stays 1.
+    case.my_x = x_data.permute(1, 0, 2)
+    # y / ys: already in the expected (h, d, r) / (h, d/128, r/128) layout.
+    case.my_y = y_data
+    case.my_ys = y_scale
+    # xs: (b, h, sf_k) -> (h, b, sf_k); view-only.
+    case.my_xs = x_scale.permute(1, 0, 2)
+
+    case.z_my = torch.empty((case.b, case.h, case.d), device=device, dtype=torch.bfloat16)
+
+
+def load_my_backend() -> Callable[[EinsumCase], "torch.Tensor"]:
+    # The op module lives next to this script; ensure ROOT is on sys.path.
+    if str(ROOT) not in sys.path:
+        sys.path.insert(0, str(ROOT))
+    from w8a8_block_fp8_bmm import w8a8_block_fp8_bmm
+
+    block_shape = list(DEFAULT_BLOCK_SHAPE)
+
+    def _run(case: EinsumCase) -> "torch.Tensor":
+        # Pass a (h, b, d) permuted view of z_my so the kernel writes directly into the
+        # (b, h, d) final buffer — no intermediate output tensor, no post-copy.
+        w8a8_block_fp8_bmm(
+            case.my_x,
+            case.my_y,
+            case.my_xs,
+            case.my_ys,
+            block_size=block_shape,
+            z=case.z_my.permute(1, 0, 2),
+            output_dtype=torch.bfloat16,
+        )
+        return case.z_my
+
+    return _run
+
+
 def load_flaggems_backend() -> Callable[[EinsumCase], "torch.Tensor"]:
     block_shape = list(DEFAULT_BLOCK_SHAPE)
 
@@ -367,6 +424,8 @@ def load_backend_runners(
                 runners[backend] = load_flaggems_backend()
             elif backend == "cublaslt":
                 runners[backend] = load_cublaslt_backend()
+            elif backend == "my":
+                runners[backend] = load_my_backend()
         except Exception as exc:
             print(f"[skip] backend={backend} unavailable: {exc}", file=sys.stderr)
     if not runners:
@@ -391,6 +450,10 @@ def case_bytes(case: EinsumCase, backend: str) -> int:
     # cuBLASLt operates on BF16 directly.
     if backend == "cublaslt":
         return count_bytes((case.x_bf16, case.y_bf16, case.z_cublaslt))
+    if backend == "my":
+        return count_bytes(
+            ((case.my_x, case.my_xs), (case.my_y, case.my_ys), case.z_my)
+        )
     out_buf = case.z_flaggems if backend == "flaggems" else case.z_deepgemm
     return count_bytes((case.x_fp8, case.y_fp8, out_buf))
 
@@ -608,6 +671,8 @@ def main() -> int:
             block_shape=block_shape,
             use_ue8m0=args.use_ue8m0,
         )
+        if "my" in runners:
+            prepare_my_inputs(case)
         if args.check:
             all_checks.extend(
                 maybe_check_outputs(
