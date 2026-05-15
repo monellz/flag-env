@@ -1,0 +1,44 @@
++ echo 20260515_224806
+20260515_224806
+++ git -C /home/zhongrx/dev/flag-env-fp8bmm/FlagGems rev-parse HEAD
++ echo 'FlagGems commit: 4c6e2c47175b09d9dfec9001c2c75623b7e3a26a'
+FlagGems commit: 4c6e2c47175b09d9dfec9001c2c75623b7e3a26a
+++ git -C /home/zhongrx/dev/flag-env-fp8bmm/FlagGems log -1 --oneline
++ echo 'FlagGems: 4c6e2c47 Add FP8 block-wise BMM kernel and fp8_einsum'
+FlagGems: 4c6e2c47 Add FP8 block-wise BMM kernel and fp8_einsum
++ cd /home/zhongrx/dev/flag-env-fp8bmm/FlagGems
++ srun --gres=gpu:1 pytest -x -vv -s tests/test_fp8_einsum.py::test_accuracy_fp8_einsum
+srun: job 148561 queued and waiting for resources
+srun: job 148561 has been allocated resources
+============================= test session starts ==============================
+platform linux -- Python 3.12.13, pytest-9.0.3, pluggy-1.6.0 -- /home/zhongrx/dev/flag-env-fp8bmm/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/zhongrx/dev/flag-env-fp8bmm/FlagGems
+configfile: pytest.ini
+plugins: anyio-4.13.0
+collecting ... collected 22 items
+
+tests/test_fp8_einsum.py::test_accuracy_fp8_einsum[block_shape0-config0] PASSED
+tests/test_fp8_einsum.py::test_accuracy_fp8_einsum[block_shape0-config1] PASSED
+tests/test_fp8_einsum.py::test_accuracy_fp8_einsum[block_shape0-config2] PASSED
+tests/test_fp8_einsum.py::test_accuracy_fp8_einsum[block_shape0-config3] PASSED
+tests/test_fp8_einsum.py::test_accuracy_fp8_einsum[block_shape0-config4] PASSED
+tests/test_fp8_einsum.py::test_accuracy_fp8_einsum[block_shape0-config5] PASSED
+tests/test_fp8_einsum.py::test_accuracy_fp8_einsum[block_shape0-config6] PASSED
+tests/test_fp8_einsum.py::test_accuracy_fp8_einsum[block_shape0-config7] PASSED
+tests/test_fp8_einsum.py::test_accuracy_fp8_einsum[block_shape0-config8] PASSED
+tests/test_fp8_einsum.py::test_accuracy_fp8_einsum[block_shape0-config9] PASSED
+tests/test_fp8_einsum.py::test_accuracy_fp8_einsum[block_shape0-config10] PASSED
+tests/test_fp8_einsum.py::test_accuracy_fp8_einsum[block_shape0-config11] PASSED
+tests/test_fp8_einsum.py::test_accuracy_fp8_einsum[block_shape0-config12] PASSED
+tests/test_fp8_einsum.py::test_accuracy_fp8_einsum[block_shape0-config13] PASSED
+tests/test_fp8_einsum.py::test_accuracy_fp8_einsum[block_shape0-config14] PASSED
+tests/test_fp8_einsum.py::test_accuracy_fp8_einsum[block_shape0-config15] PASSED
+tests/test_fp8_einsum.py::test_accuracy_fp8_einsum[block_shape0-config16] PASSED
+tests/test_fp8_einsum.py::test_accuracy_fp8_einsum[block_shape0-config17] PASSED
+tests/test_fp8_einsum.py::test_accuracy_fp8_einsum[block_shape0-config18] PASSED
+tests/test_fp8_einsum.py::test_accuracy_fp8_einsum[block_shape0-config19] PASSED
+tests/test_fp8_einsum.py::test_accuracy_fp8_einsum[block_shape0-config20] PASSED
+tests/test_fp8_einsum.py::test_accuracy_fp8_einsum[block_shape0-config21] PASSED
+
+============================== 22 passed in 2.15s ==============================

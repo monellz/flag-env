@@ -1,0 +1,50 @@
++ echo 20260515_224806
+20260515_224806
+++ git -C /home/zhongrx/dev/flag-env-fp8bmm/FlagGems rev-parse HEAD
++ echo 'FlagGems commit: 4c6e2c47175b09d9dfec9001c2c75623b7e3a26a'
+FlagGems commit: 4c6e2c47175b09d9dfec9001c2c75623b7e3a26a
+++ git -C /home/zhongrx/dev/flag-env-fp8bmm/FlagGems log -1 --oneline
++ echo 'FlagGems: 4c6e2c47 Add FP8 block-wise BMM kernel and fp8_einsum'
+FlagGems: 4c6e2c47 Add FP8 block-wise BMM kernel and fp8_einsum
++ cd /home/zhongrx/dev/flag-env-fp8bmm/FlagGems/benchmark
++ srun --gres=gpu:1 pytest -x -vv -s --use_cudagraph test_fp8_einsum.py::test_perf_fp8_einsum_gems_vs_deepgemm
+srun: job 148563 queued and waiting for resources
+srun: job 148563 has been allocated resources
+============================= test session starts ==============================
+platform linux -- Python 3.12.13, pytest-9.0.3, pluggy-1.6.0 -- /home/zhongrx/dev/flag-env-fp8bmm/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/zhongrx/dev/flag-env-fp8bmm/FlagGems
+configfile: pytest.ini
+plugins: anyio-4.13.0
+collecting ... collected 1 item
+
+test_fp8_einsum.py::test_perf_fp8_einsum_gems_vs_deepgemm 
+Operator: fp8_einsum  Performance Test (dtype=torch.bfloat16, mode=kernel,level=comprehensive)
+Status       Torch Latency (ms)    Gems Latency (ms)         Gems Speedup               TFLOPS          Size Detail
+--------------------------------------------------------------------------------------------------------------------
+SUCCESS               0.022534            0.009619               2.343               6.977          [torch.Size([1, 8, 4096]), torch.Size([1, 8, 32]), torch.Size([8, 1024, 4096]), torch.Size([8, 8, 32])]
+SUCCESS               0.022661            0.010024               2.261              26.779          [torch.Size([4, 8, 4096]), torch.Size([4, 8, 32]), torch.Size([8, 1024, 4096]), torch.Size([8, 8, 32])]
+SUCCESS               0.022768            0.009984               2.281              53.775          [torch.Size([8, 8, 4096]), torch.Size([8, 8, 32]), torch.Size([8, 1024, 4096]), torch.Size([8, 8, 32])]
+SUCCESS               0.022812            0.010499               2.173             102.266          [torch.Size([16, 8, 4096]), torch.Size([16, 8, 32]), torch.Size([8, 1024, 4096]), torch.Size([8, 8, 32])]
+SUCCESS               0.022973            0.014933               1.538             143.806          [torch.Size([32, 8, 4096]), torch.Size([32, 8, 32]), torch.Size([8, 1024, 4096]), torch.Size([8, 8, 32])]
+SUCCESS               0.022662            0.021983               1.031             195.373          [torch.Size([64, 8, 4096]), torch.Size([64, 8, 32]), torch.Size([8, 1024, 4096]), torch.Size([8, 8, 32])]
+SUCCESS               0.042503            0.041589               1.022             206.545          [torch.Size([128, 8, 4096]), torch.Size([128, 8, 32]), torch.Size([8, 1024, 4096]), torch.Size([8, 8, 32])]
+SUCCESS               1.070201            1.028641               1.040             267.224          [torch.Size([4096, 8, 4096]), torch.Size([4096, 8, 32]), torch.Size([8, 1024, 4096]), torch.Size([8, 8, 32])]
+SUCCESS               2.059047            2.054487               1.002             267.588          [torch.Size([8192, 8, 4096]), torch.Size([8192, 8, 32]), torch.Size([8, 1024, 4096]), torch.Size([8, 8, 32])]
+SUCCESS               4.037811            4.097181               0.986             268.358          [torch.Size([16384, 8, 4096]), torch.Size([16384, 8, 32]), torch.Size([8, 1024, 4096]), torch.Size([8, 8, 32])]
+SUCCESS               8.059653            8.172399               0.986             269.079          [torch.Size([32768, 8, 4096]), torch.Size([32768, 8, 32]), torch.Size([8, 1024, 4096]), torch.Size([8, 8, 32])]
+SUCCESS               0.073180            0.037552               1.949               6.255          [torch.Size([1, 16, 7168]), torch.Size([1, 16, 56]), torch.Size([16, 1024, 7168]), torch.Size([16, 8, 56])]
+SUCCESS               0.073406            0.038915               1.886              24.143          [torch.Size([4, 16, 7168]), torch.Size([4, 16, 56]), torch.Size([16, 1024, 7168]), torch.Size([16, 8, 56])]
+SUCCESS               0.073372            0.040261               1.822              46.672          [torch.Size([8, 16, 7168]), torch.Size([8, 16, 56]), torch.Size([16, 1024, 7168]), torch.Size([16, 8, 56])]
+SUCCESS               0.073220            0.042468               1.724              88.493          [torch.Size([16, 16, 7168]), torch.Size([16, 16, 56]), torch.Size([16, 1024, 7168]), torch.Size([16, 8, 56])]
+SUCCESS               0.073615            0.050863               1.447             147.772          [torch.Size([32, 16, 7168]), torch.Size([32, 16, 56]), torch.Size([16, 1024, 7168]), torch.Size([16, 8, 56])]
+SUCCESS               0.072606            0.072341               1.004             207.798          [torch.Size([64, 16, 7168]), torch.Size([64, 16, 56]), torch.Size([16, 1024, 7168]), torch.Size([16, 8, 56])]
+SUCCESS               0.137706            0.138880               0.992             216.481          [torch.Size([128, 16, 7168]), torch.Size([128, 16, 56]), torch.Size([16, 1024, 7168]), torch.Size([16, 8, 56])]
+SUCCESS               3.565590            3.566532               1.000             269.750          [torch.Size([4096, 16, 7168]), torch.Size([4096, 16, 56]), torch.Size([16, 1024, 7168]), torch.Size([16, 8, 56])]
+SUCCESS               6.992710            7.138985               0.980             269.526          [torch.Size([8192, 16, 7168]), torch.Size([8192, 16, 56]), torch.Size([16, 1024, 7168]), torch.Size([16, 8, 56])]
+SUCCESS              14.001749           14.249728               0.983             270.061          [torch.Size([16384, 16, 7168]), torch.Size([16384, 16, 56]), torch.Size([16, 1024, 7168]), torch.Size([16, 8, 56])]
+SUCCESS              27.798752           28.472230               0.976             270.319          [torch.Size([32768, 16, 7168]), torch.Size([32768, 16, 56]), torch.Size([16, 1024, 7168]), torch.Size([16, 8, 56])]
+
+PASSED
+
+============================== 1 passed in 38.53s ==============================

@@ -367,26 +367,17 @@ def prepare_my_inputs(case: EinsumCase) -> None:
 
 
 def load_my_backend() -> Callable[[EinsumCase], "torch.Tensor"]:
-    # The op module lives next to this script; ensure ROOT is on sys.path.
-    if str(ROOT) not in sys.path:
-        sys.path.insert(0, str(ROOT))
-    from w8a8_block_fp8_bmm import w8a8_block_fp8_bmm
+    # fp8_einsum / w8a8_block_fp8_bmm now live inside FlagGems (installed editable).
+    from flag_gems.runtime.backend._nvidia.hopper.ops.fp8_einsum import fp8_einsum
 
     block_shape = list(DEFAULT_BLOCK_SHAPE)
 
     def _run(case: EinsumCase) -> "torch.Tensor":
-        # Pass a (h, b, d) permuted view of z_my so the kernel writes directly into the
-        # (b, h, d) final buffer — no intermediate output tensor, no post-copy.
-        w8a8_block_fp8_bmm(
-            case.my_x,
-            case.my_y,
-            case.my_xs,
-            case.my_ys,
-            block_size=block_shape,
-            z=case.z_my.permute(1, 0, 2),
-            output_dtype=torch.bfloat16,
+        x_data, x_scale = case.x_fp8   # (b,h,r) fp8, (b,h,r/128) f32
+        y_data, y_scale = case.y_fp8   # (h,d,r) fp8, (h,d/128,r/128) f32
+        return fp8_einsum(
+            "bhr,hdr->bhd", x_data, x_scale, y_data, y_scale, block_size=block_shape
         )
-        return case.z_my
 
     return _run
 
