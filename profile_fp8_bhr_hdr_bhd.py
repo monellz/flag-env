@@ -47,7 +47,7 @@ count_bytes = None
 
 # (b, h, r, d) tuples. h/r/d groups follow the user-defined model classes;
 # b sweeps mirror DeepGEMM/tests/test_einsum.py::test_fp8_bhr_hdr_bhd.
-_BATCH_SIZES = (1, 4, 32, 128, 4096, 8192, 16384, 32768)
+_BATCH_SIZES = (1, 4, 8, 16, 32, 128, 4096, 8192, 16384, 32768)
 _HRD_GROUPS = {
     "small": (128, 512, 128),
     "flash": (8, 4096, 1024),
