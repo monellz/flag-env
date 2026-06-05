@@ -123,7 +123,7 @@ def load_runtime_deps(want_vllm: bool) -> None:
         fused_marlin_moe as _gems_fmm,
         QUANT_TYPE_UINT4B8 as _gems_qt,
     )
-    from flag_gems.fused.fused_marlin_moe_w4a16 import (
+    from flag_gems.fused.fused_marlin_moe import (
         fused_moe_w4a16_gptq as _my_fmm,
     )
 

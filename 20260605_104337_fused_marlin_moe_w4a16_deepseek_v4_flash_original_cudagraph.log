@@ -1,0 +1,18 @@
+INFO 06-05 10:39:48 [nixl_utils.py:20] Setting UCX_RCACHE_MAX_UNRELEASED to '1024' to avoid a rare memory leak in UCX when using NIXL.
+WARNING 06-05 10:39:48 [nixl_utils.py:34] NIXL is not available
+WARNING 06-05 10:39:48 [nixl_utils.py:44] NIXL agent config is not available
+
+Operator: fused_marlin_moe  Performance Test (dtype=torch.bfloat16, mode=kernel,level=comprehensive)
+Status       Torch Latency (ms)    Gems Latency (ms)         Gems Speedup          Size Detail
+-----------------------------------------------------------------------------------------------
+SUCCESS               0.072805            0.335222               0.217          [torch.Size([1, 4096]), torch.Size([256, 4096, 2048]), torch.Size([256, 4096, 1024]), torch.Size([256, 4096, 32]), torch.Size([256, 4096, 16]), torch.Size([256, 256, 8192]), torch.Size([256, 128, 8192]), torch.Size([256, 32, 4096]), torch.Size([256, 16, 4096]), torch.Size([1, 6]), torch.Size([1, 6])]
+SUCCESS               0.210081            1.211775               0.173          [torch.Size([4, 4096]), torch.Size([256, 4096, 2048]), torch.Size([256, 4096, 1024]), torch.Size([256, 4096, 32]), torch.Size([256, 4096, 16]), torch.Size([256, 256, 8192]), torch.Size([256, 128, 8192]), torch.Size([256, 32, 4096]), torch.Size([256, 16, 4096]), torch.Size([4, 6]), torch.Size([4, 6])]
+SUCCESS               0.363092            2.164878               0.168          [torch.Size([8, 4096]), torch.Size([256, 4096, 2048]), torch.Size([256, 4096, 1024]), torch.Size([256, 4096, 32]), torch.Size([256, 4096, 16]), torch.Size([256, 256, 8192]), torch.Size([256, 128, 8192]), torch.Size([256, 32, 4096]), torch.Size([256, 16, 4096]), torch.Size([8, 6]), torch.Size([8, 6])]
+SUCCESS               0.661117            3.924706               0.168          [torch.Size([16, 4096]), torch.Size([256, 4096, 2048]), torch.Size([256, 4096, 1024]), torch.Size([256, 4096, 32]), torch.Size([256, 4096, 16]), torch.Size([256, 256, 8192]), torch.Size([256, 128, 8192]), torch.Size([256, 32, 4096]), torch.Size([256, 16, 4096]), torch.Size([16, 6]), torch.Size([16, 6])]
+SUCCESS               1.086264            6.491334               0.167          [torch.Size([32, 4096]), torch.Size([256, 4096, 2048]), torch.Size([256, 4096, 1024]), torch.Size([256, 4096, 32]), torch.Size([256, 4096, 16]), torch.Size([256, 256, 8192]), torch.Size([256, 128, 8192]), torch.Size([256, 32, 4096]), torch.Size([256, 16, 4096]), torch.Size([32, 6]), torch.Size([32, 6])]
+SUCCESS               1.556249            9.243168               0.168          [torch.Size([64, 4096]), torch.Size([256, 4096, 2048]), torch.Size([256, 4096, 1024]), torch.Size([256, 4096, 32]), torch.Size([256, 4096, 16]), torch.Size([256, 256, 8192]), torch.Size([256, 128, 8192]), torch.Size([256, 32, 4096]), torch.Size([256, 16, 4096]), torch.Size([64, 6]), torch.Size([64, 6])]
+SUCCESS               1.900620           11.175270               0.170          [torch.Size([128, 4096]), torch.Size([256, 4096, 2048]), torch.Size([256, 4096, 1024]), torch.Size([256, 4096, 32]), torch.Size([256, 4096, 16]), torch.Size([256, 256, 8192]), torch.Size([256, 128, 8192]), torch.Size([256, 32, 4096]), torch.Size([256, 16, 4096]), torch.Size([128, 6]), torch.Size([128, 6])]
+SUCCESS               2.261171           11.855242               0.191          [torch.Size([256, 4096]), torch.Size([256, 4096, 2048]), torch.Size([256, 4096, 1024]), torch.Size([256, 4096, 32]), torch.Size([256, 4096, 16]), torch.Size([256, 256, 8192]), torch.Size([256, 128, 8192]), torch.Size([256, 32, 4096]), torch.Size([256, 16, 4096]), torch.Size([256, 6]), torch.Size([256, 6])]
+
+.
+1 passed in 234.15s (0:03:54)
