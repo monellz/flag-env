@@ -1,17 +1,14 @@
 [submodule "FlagGems"]
 	path = FlagGems
 	url = git@github.com:monellz/FlagGems.git
-	branch = opt_fused_marlin_moe
+	branch = master
 [submodule "FlagTree"]
 	path = FlagTree
-	url = git@github.com:monellz/FlagTree.git
-	branch = add_fused_moe
+	url = https://github.com/flagos-ai/FlagTree.git
+	branch = triton_v3.6.x
 [submodule "hpc-ops"]
 	path = hpc-ops
 	url = git@github.com:Tencent/hpc-ops.git
-[submodule "sonic-moe"]
-	path = sonic-moe
-	url = git@github.com:monellz/sonic-moe.git
 [submodule "DeepGEMM"]
 	path = DeepGEMM
 	url = git@github.com:deepseek-ai/DeepGEMM.git
