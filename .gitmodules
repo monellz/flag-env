@@ -6,9 +6,3 @@
 	path = FlagTree
 	url = https://github.com/flagos-ai/FlagTree.git
 	branch = triton_v3.6.x
-[submodule "hpc-ops"]
-	path = hpc-ops
-	url = git@github.com:Tencent/hpc-ops.git
-[submodule "DeepGEMM"]
-	path = DeepGEMM
-	url = git@github.com:deepseek-ai/DeepGEMM.git
